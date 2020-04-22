@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/play.css') }}">
+{% endblock %}
+
+{% block body %}
+<div>
+	<h1 class="play">Play {{plays.play_name}}</h1>
+	<table class="play_table">
+		<tr>
+			<th class="top-header" scope="col">Title</th>
+			<th class="top-header"  scope="col">Action</th>
+		</tr>
+			<tr>
+				<th class="side-header" scope="row">Playbook Name</th>
+				<td class="table-content">{{ plays.play_name }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">Playbook Description</th>
+				<td class="table-content">{{ plays.playbook_description }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">Date Added</th>
+				<td class="table-content">{{ plays.date_added }}</td>
+			</tr>
+			{% if plays.date_updated%}
+			<tr>
+				<th class="side-header" scope="row">Date Updated</th>
+				<td class="table-content">{{ plays.date_updated }}</td>
+			</tr>
+			{% endif %}
+			<tr>
+				<th class="side-header" scope="row">Playbook Owner</th>
+				<td class="table-content">{{ plays.playbook_owner }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">Playbook Type</th>
+				<td class="table-content">{{ plays.playbook_type }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">Detection Technology</th>
+				<td class="table-content">{{ plays.detection_technology }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">Category</th>
+				<td class="table-content">{{ plays.category }}</td>
+			</tr>
+			{% if plays.subcategory|length > 1 %}
+			<tr>
+				<th class="side-header" scope="row">Subcategory</th>
+				<td class="table-content">{{ plays.subcategory }}</td>
+			</tr>
+			{% endif %}
+			<tr>
+				<th class="side-header" scope="row">Splunk Query</th>
+				<td class="table-content">{{ plays.splunk_query }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">Run Frequency</th>
+				<td class="table-content">{{ plays.run_frequency }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">Analyst Action</th>
+				<td class="table-content">{{ plays.analyst_action }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">Mitre ID</th>
+				<td class="table-content">{{ plays.mitre_id }}</td>
+			</tr>
+			{% if plays.mitre_info_tactic|length > 1 %}
+			<tr>
+				<th class="side-header" scope="row">Mitre Tactic</th>
+				<td class="table-content">{{ plays.mitre_info_tactic }}</td>
+			</tr>
+			{% endif %}
+			{% if "TA" in plays.mitre_id %}
+			<tr>
+				<th class="side-header" scope="row">Mitre Tactic</th>
+				<td class="table-content">{{ plays.mitre_info_name }}</td>
+			</tr>
+			{% else %}
+			<tr>
+				<th class="side-header" scope="row">Mitre Name</th>
+				<td class="table-content">{{ plays.mitre_info_name }}</td>
+			</tr>
+			{% endif %}
+			{% if plays.mitre_os|length > 1 %}
+			<tr>
+				<th class="side-header" scope="row">Mitre OS</th>
+				<td class="table-content">{{ plays.mitre_os }}</td>
+			</tr>
+			{% endif %}
+			<tr>
+				<th class="side-header" scope="row">Mitre Description</th>
+				<td class="table-content">{{ plays.mitre_info_description }}</td>
+			</tr>
+			<tr>
+				<th class="side-header" scope="row">mitre url</th>
+				<td class="table-content">{{ plays.mitre_info_url }}</td>
+			</tr>
+
+	</table>
+	</div>
+	<br>
+	<form id="play_update" action="../update/{{plays.id}}">
+    	<input class="update" type="submit" value="Edit Play">
+  	</form>
+
+	<form id="play_delete" action="/deleted/{{plays.id}}" method="POST">
+    	<input class="delete" class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+  	</form>
+	
+	<br>
+{% endblock %}

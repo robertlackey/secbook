@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/play.css') }}">
+{% endblock %}
+
+{% block body %}
+<div>
+	<h1 class="play">Archive List</h1>
+	<table class="play_table">
+		
+		<tr>
+			<th class="top-header" scope="col">Play Name</th>
+			<th class="top-header"  scope="col">Action</th>
+		</tr>
+		{% for play in plays %}
+			<tr>
+				
+				<th class="side-header" scope="row">{{ play.play_name }}</th>
+				<td class="table-content">
+					<form id="play_delete" action="/unarchive/{{play.id}}" method="POST">
+			    	<input class="update" type="submit" value="Unarchive" onclick="return confirm('Are you sure?');">
+			  		</form></td>
+			</tr>
+			{%endfor%}
+			
+	</table>
+	</div>
+	<br>
+
+	
+	
+	<br>
+{% endblock %}

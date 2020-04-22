@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/add_play.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="content">
+	<h1>Playbook</h1>
+	<div class="container">
+	        <form action="add_play.html" method="POST">
+
+	        	<label class="add_play_label" for="play_name">Play Name</label>
+			    <input type="text" id="play_name" name="play_name" placeholder="Play Name.." required>
+
+			    <label class="add_play_label" for="playbook_owner">Owner</label>
+			    <input type="text" id="playbook_owner" name="playbook_owner" placeholder="Play Owner..">
+
+			    <label class="add_play_label" for="detection_technology">Detection Technology</label>
+			    <select id="detection_technology" name="detection_technology">
+			    	{% for item in detection_technology %}
+				    <option value="{{item}}">{{item}}</option>
+				    {% endfor %}
+				</select>
+
+			    <label class="add_play_label" for="playbook_type">Playbook Type</label>
+			    <select id="playbook_type" name="playbook_type">
+			    	{% for item in playbook_type %}
+				    <option value="{{item}}">{{item}}</option>
+				    {% endfor %}
+				</select>
+
+			    <label class="add_play_label" for="category">Category</label>
+			    <select id="category" name="category">
+			    	{% for item in category %}
+				    <option value="{{item}}">{{item}}</option>
+				    {% endfor %}
+				</select>
+
+				<label class="add_play_label" for="subcategory">Subcategory</label>
+			    <select id="subcategory" name="subcategory">
+			    	{% for item in subcategory %}
+				    <option value="{{item}}">{{item}}</option>
+				    {% endfor %}
+				</select>
+
+			    <label class="add_play_label" for="mitre_id">Mitre ID</label>
+			    <input type="text" id="mitre_id" name="mitre_id" placeholder="Mitre ID..">
+
+			    <label class="add_play_label" for="splunk_query">Splunk Query</label>
+			    <input type="text" id="splunk_query" name="splunk_query" placeholder="Splunk Query...">
+
+			    <label class="add_play_label" for="run_frequency">Run Frequency</label>
+			    <input type="text" id="run_frequency" name="run_frequency" placeholder="Run Frequency..">
+
+			    <label class="add_play_label" for="analyst_action">Analyst Action</label>
+			    <textarea id="analyst_action" name="analyst_action" placeholder="Analyst Action.." style="height:100px"></textarea>
+
+			    <label class="add_play_label" for="playbook_description">Description</label>
+			    <textarea id="playbook_description" name="playbook_description" placeholder="Description.." style="height:100px"></textarea>
+
+	            <input type="submit" value="Add">
+	        </form>
+    	</div>
+	</div>
+{% endblock %}

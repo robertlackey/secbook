@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/add_play.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="content">
+	<h1>Editing Play {{plays.play_name}}</h1>
+	<div class="container">
+
+
+	        <form action="{{plays.id}}" method="POST">
+
+	        	<label class="add_play_label" for="play_name">Play Name</label>
+			    <input type="text" id="play_name" name="play_name" value="{{ plays.play_name }}">
+
+			    <label class="add_play_label" for="playbook_owner">Owner</label>
+			    <input type="text" id="playbook_owner" name="playbook_owner" value="{{ plays.playbook_owner }}">
+
+			    <label class="add_play_label" for="playbook_type">Playbook Type</label>
+			    <select id="playbook_type" name="playbook_type" selected="{{plays.playbook_type}}">
+			    	{% set default_value = plays.playbook_type %}
+			    	{% for item in playbook_type %}
+				    <option value="{{item}}" {% if item == default_value %} selected="default_value" {%endif%}>{{item}}</option>
+				    {% endfor %}
+				</select>
+
+			    <label class="add_play_label" for="detection_technology">Detection Technology</label>
+			    <select id="detection_technology" name="detection_technology" >
+			    	{% set default_value = plays.detection_technology %}
+			    	{% for item in detection_technology %}
+				    <option value="{{item}}" {% if item == default_value %} selected="default_value" {%endif%}>{{item}}</option>
+				    {% endfor %}
+				</select>
+
+			    <label class="add_play_label" for="category">Category</label>
+			    <select id="category" name="category" selected="{{plays.category}}">
+			    	{% set default_value = plays.category %}
+			    	{% for item in category %}
+				    <option value="{{item}}" {% if item == default_value %} selected="default_value" {%endif%}>{{item}}</option>
+				    {% endfor %}
+				</select>
+
+				<label class="add_play_label" for="subcategory">Subcategory</label>
+			    <select id="subcategory" name="subcategory" selected="{{plays.subcategory}}">
+			    	{% set default_value = plays.subcategory %}
+			    	{% for item in subcategory %}
+				    <option value="{{item}}" {% if item == default_value %} selected="default_value" {%endif%}>{{item}}</option>
+				    {% endfor %}
+				</select>
+
+			    <label class="add_play_label" for="mitre_id">Mitre ID</label>
+			    <input type="text" id="mitre_id" name="mitre_id" value="{{ plays.mitre_id }}">
+
+			    <label class="add_play_label" for="splunk_query">Splunk Query</label>
+			    <input type="text" id="splunk_query" name="splunk_query" value="{{ plays.splunk_query }}">
+
+			    <label class="add_play_label" for="run_frequency">Run Frequency</label>
+			    <input type="text" id="run_frequency" name="run_frequency" value="{{ plays.run_frequency }}">
+
+			    <label class="add_play_label" for="analyst_action">Analyst Action</label>
+			    <textarea id="analyst_action" name="analyst_action" value="{{ plays.analyst_action }}" style="height:100px">{{ plays.analyst_action }}</textarea>
+
+			    <label class="add_play_label" for="playbook_description">Description</label>
+			    <textarea id="playbook_description" name="playbook_description" value="{{ plays.playbook_description }} "style="height:100px">{{ plays.playbook_description }}</textarea>
+
+	            <input type="submit" value="Update">
+	        </form>
+    	</div>
+	</div>
+{% endblock %}
