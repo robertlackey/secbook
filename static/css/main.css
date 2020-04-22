@@ -1,0 +1,15 @@
+body, html {
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.content {
+    margin: 0 auto;
+    width: 700px;
+}
+
+#content {
+    width: 70%;
+}
+
+
