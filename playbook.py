@@ -224,11 +224,9 @@ def map():
 		for play in plays:
 			if play.mitre_id in val:
 				return "background-color: #3498DB"
-			else:
-				return 'background-color: white'
+		return "background-color: white"
 
 	df = df.style.set_properties(**{'font-size': '11pt','background-color': '#edeeef','border-color': 'black','border-style' :'solid' ,'border-width': '1px','border-collapse':'collapse'}).applymap(custom_styles).render()
-
 
 	return render_template('map.html', tables=[df])
 
