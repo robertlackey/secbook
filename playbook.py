@@ -2,13 +2,19 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from extract_mitre import *
+from mitre_map import *
+import pandas as pd
+from itertools import zip_longest
 import requests
 import json
 
 mitre_info = extract_mitre()
+mitre_map = mitre_map()
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
 #database class to store playbook data
@@ -187,6 +193,44 @@ def update_play(id):
 
 	else:
 		return render_template('update.html', plays=plays, category=category, subcategory=subcategory, playbook_type=playbook_type, detection_technology=detection_technology)
+
+#TODO add map for mitre IDs and tactic count
+@app.route('/map.html', methods=['GET','POST'])
+def map():
+	tactics = mitre_map.get_tactics()
+	#mitre_number = playbook.query.filter_by(mitre_id).all()
+
+	lst = list(zip_longest(
+		mitre_map.collection(),
+		mitre_map.command_and_control(),
+		mitre_map.credential_access(),
+		mitre_map.defense_evasion(),
+		mitre_map.discovery(),
+		mitre_map.execution(),
+		mitre_map.exfiltration(),
+		mitre_map.impact(),
+		mitre_map.initial_access(),
+		mitre_map.lateral_movement(),
+		mitre_map.persistence(),
+		mitre_map.priv_esc(),
+		fillvalue=" "
+		))
+
+	df = pd.DataFrame(lst, columns=tactics)
+
+	def custom_styles(val):
+		plays = playbook.query.filter_by(deleted=0).all()
+		# price column styles
+		for play in plays:
+			if play.mitre_id in val:
+				return "background-color: #3498DB"
+			else:
+				return 'background-color: white'
+
+	df = df.style.set_properties(**{'font-size': '11pt','background-color': '#edeeef','border-color': 'black','border-style' :'solid' ,'border-width': '1px','border-collapse':'collapse'}).applymap(custom_styles).render()
+
+
+	return render_template('map.html', tables=[df])
 
 #delete play by ID name. Delete button added to play page
 @app.route('/deleted/<int:id>', methods=['GET','POST'])
