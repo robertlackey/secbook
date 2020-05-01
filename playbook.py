@@ -194,39 +194,40 @@ def update_play(id):
 	else:
 		return render_template('update.html', plays=plays, category=category, subcategory=subcategory, playbook_type=playbook_type, detection_technology=detection_technology)
 
-#TODO add map for mitre IDs and tactic count
-@app.route('/map.html', methods=['GET','POST'])
+@pb.route('/map.html', methods=['GET','POST'])
 def map():
 	tactics = mitre_map.get_tactics()
-	#mitre_number = playbook.query.filter_by(mitre_id).all()
+	#creating pandas dataframe
+	df = pd.DataFrame.from_dict(tactics, orient='index').T
+	df.replace(to_replace=[None], value=" ", inplace=True)
 
-	lst = list(zip_longest(
-		mitre_map.collection(),
-		mitre_map.command_and_control(),
-		mitre_map.credential_access(),
-		mitre_map.defense_evasion(),
-		mitre_map.discovery(),
-		mitre_map.execution(),
-		mitre_map.exfiltration(),
-		mitre_map.impact(),
-		mitre_map.initial_access(),
-		mitre_map.lateral_movement(),
-		mitre_map.persistence(),
-		mitre_map.priv_esc(),
-		fillvalue=" "
-		))
-
-	df = pd.DataFrame(lst, columns=tactics)
-
+	#function to find Mitre IDs in database and highlight cells with IDs present
 	def custom_styles(val):
-		plays = playbook.query.filter_by(deleted=0).all()
-		# price column styles
+		plays = Playbook.query.filter_by(deleted=0).all()
 		for play in plays:
-			if play.mitre_id in val:
-				return "background-color: #3498DB"
+			mitre_id = play.mitre_id.split(",")
+			# price column styles
+			for mitre_id1 in mitre_id:
+				#extracting mitre IDs from playbook string
+				try:
+					id_list = re.findall(r"(TA\d+|T\d+)[^\d+\.\d+]", mitre_id1)
+					id_sub_list = re.findall(r"\d+\.\d+", mitre_id1)
+					val_id = re.findall(r"(TA\d+|T\d+)[^\d+\.\d+]", val)
+					val_sub_id =  re.findall(r"\d+\.\d+", val)
+					#iterating through the list of IDs in id_list
+					for item in id_list:
+						#if an ID is found, turn the background blue
+						if item == val_id[0]:
+							return "background-color: #3498DB"
+					for item in id_sub_list:
+						if item == val_sub_id[0]:
+							return "background-color: #3498DB"
+				except:
+					pass
+		#if there is no ID in database, turn background white
 		return "background-color: white"
-
-	df = df.style.set_properties(**{'font-size': '11pt','background-color': '#edeeef','border-color': 'black','border-style' :'solid' ,'border-width': '1px','border-collapse':'collapse'}).applymap(custom_styles).render()
+	#defining table format
+	df = df.style.set_properties(**{'white-space': 'pre-wrap','font-size': '11pt','background-color': '#edeeef','border-color': 'black','border-style' :'solid' ,'border-width': '1px','border-collapse':'collapse'}).applymap(custom_styles).render()
 
 	return render_template('map.html', tables=[df])
 
