@@ -97,23 +97,23 @@ def add_play():
 		#try to get mitre info unless there is an error
 		#github might be not working or the data might be changed to wrong format
 		try:
-			mitre_info_name = mitre_info.get_name(mitre_id)
+			mitre_info_name = mitre_info.get_attribute(mitre_id, 'id')
 		except:
 			pass
 		try:
-			mitre_info_description = mitre_info.get_description(mitre_id)
+			mitre_info_description = mitre_info.get_attribute(mitre_id, 'description')
 		except:
 			pass
 		try:
-			mitre_info_url = mitre_info.get_url(mitre_id)
+			mitre_info_url = mitre_info.get_attribute(mitre_id, 'url')
 		except:
 			pass
 		try:
-			mitre_info_tactic = mitre_info.get_kill_chain_phase(mitre_id)
+			mitre_info_tactic = mitre_info.get_attribute(mitre_id, 'kill_chain_phases')
 		except:
 			pass
 		try:
-			mitre_os = mitre_info.get_platforms(mitre_id)
+			mitre_os = mitre_info.get_attribute(mitre_id, 'platforms')
 		except:
 			pass
 
