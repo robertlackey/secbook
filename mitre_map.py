@@ -1,41 +1,51 @@
 import requests
 from collections import defaultdict
 
-class mitre_map:
-	def __init__(self):
-		#defining get request to pull data from github
-		r = requests.get("https://raw.githubusercontent.com/mitre/cti/subtechniques/enterprise-attack/enterprise-attack.json")
-		try:
-			self.json_data = r.json()
-		except:
-			pass
 
-	def get_tactics(self):
-		self.tactics = defaultdict(list)
-		sorted_tactics = defaultdict(list)
+class MitreMap:
+    def __init__(self):
+        # Define get request to pull data from github
+        r = requests.get("https://raw.githubusercontent.com/mitre/cti/subtechniques/enterprise-attack/enterprise-attack.json")
+        try:
+            self.json_data = r.json()
+        except:
+            print("Failed to retrieve JSON data")
 
-		def get_phases():
-			for self.value in self.json_data['objects']:
-				try:
-					if "TA" in self.value['external_references'][0]['external_id']:
-						name = self.value['name']
-						self.tactics[name] = []
-				except:
-					pass
-		get_phases()
-		
-		for self.value in self.json_data['objects']:
-			try:
+    def get_tactics(self):
+        # Create a dictionary to store tactics and their associated techniques
+        self.tactics = defaultdict(list)
+        sorted_tactics = defaultdict(list)
 
-				phase = self.value['kill_chain_phases']
-				for x in self.tactics:
-					for i in phase:
-						p = i['phase_name'].replace("-", " ")
-						if x.lower() in p:
-							self.tactics[x].append(self.value['external_references'][0]['external_id'] + "\n" + self.value['name'])
-			except:
-				pass
-		for k,v in self.tactics.items():
-			sorted_tactics[k] = sorted(v)
+        def get_phases():
+            # Retrieve the names of all tactics
+            for mitre_object in self.json_data['objects']:
+                try:
+                    if "TA" in mitre_object['external_references'][0]['external_id']:
+                        name = mitre_object['name']
+                        self.tactics[name] = []
+                except:
+                    pass
+        get_phases()
 
-		return sorted_tactics
+        # Retrieve the techniques associated with each tactic
+        for mitre_object in self.json_data['objects']:
+            try:
+                phase = mitre_object['kill_chain_phases']
+                for tactic in self.tactics:
+                    for i in phase:
+                        p = i['phase_name'].replace("-", " ")
+                        if tactic.lower() in p:
+                            self.tactics[tactic].append(mitre_object['external_references'][0]['external_id'] + "\n" + mitre_object['name'])
+            except:
+                pass
+
+        # Sort the techniques for each tactic alphabetically
+        for k,v in self.tactics.items():
+            sorted_tactics[k] = sorted(v)
+
+        return sorted_tactics
+
+if __name__ == '__main__':
+    mitre_map = MitreMap()
+    tactics = mitre_map.get_tactics()
+    print(tactics)
