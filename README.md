@@ -3,7 +3,7 @@
 ### DISCLAIMER:
 This app was built for learning purposes. It pulls down the MITRE ATT&CK data from github, puts the specific fields into form fields, and stores in a postgresql database. 
 
-This requires an env file with the following content. The values can be changed to anythig you like.
+This requires a .env file with the following content. The values can be changed to anythig you like.
 ```
 POSTGRES_DB=playbook
 POSTGRES_USER=user
