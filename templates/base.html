@@ -1,21 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, intial-scale=1.0">
+	<meta name="viewport" content="width=device-width">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	<link nonce="{{ csp_nonce() }}" rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" >
+	<link nonce="{{ csp_nonce() }}" rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link nonce="{{ csp_nonce() }}" rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	<script nonce="{{ csp_nonce() }}" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<!-- CSS for navbar -->
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+
 	{% block head %}{% endblock %}
 </head>
+
 <body>
-	<div class="navbar">
-	  <a href="{{ url_for('index') }}">Home</a>
-	  <a href="{{ url_for('add_play') }}">Add Play</a>
-	  <a href="{{ url_for('archive') }}">Archive</a>
-	  <a href="{{ url_for('map') }}">Map</a>
-	</div>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			{% if current_user.is_authenticated %}
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="{{ url_for('pb.index')|escape }}">Home <span class="sr-only">(current)</span></a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="{{ url_for('pb.add_play')|escape }}">Add Play</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="{{ url_for('pb.map')|escape }}">Map</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="{{ url_for('pb.archive')|escape }}">Archive</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="{{ url_for('pb.count')|escape }}">Count By User</a>
+				</li>
+			</ul>
+		</div>
+		<div class="navbar-nav" id="navbarSupportedContent">
+			<p>Dark Mode</p>
+			<label class="switch btn-toggle">
+				<input type="checkbox" id="btn-toggle">
+				<span class="slider round"></span>
+			</label>
+			<a class="nav-item nav-link active" href="{{ url_for('pb.logout_local') }}">Logout</a>
+			{% else %}
+			<a class="nav-link" href="{{ url_for('pb.login') }}">Login</a>
+			{% endif %}
+		</div>
+	</nav>
+
 	{% block body %}{% endblock %}
+	<script nonce="{{ csp_nonce() }}" type=text/javascript src="{{url_for('static', filename='js/themetoggle.js')|escape }}"></script>
 </body>
+
 </html>

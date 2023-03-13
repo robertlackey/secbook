@@ -2,33 +2,136 @@
 
 {% block head %}
 <!-- CSS for customizing dropdown buttong -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dropdown.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<link nonce="{{ csp_nonce() }}" rel="stylesheet" href="{{ url_for('static', filename='css/dropdown.css') }} " >
+<link nonce="{{ csp_nonce() }}" rel="stylesheet" href="{{ url_for('static', filename='css/expandable.css') }} " >
+<script nonce="{{ csp_nonce() }}" src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0" ></script>
 {% endblock %}
 
 {% block body %}
-<div class="content">
-	<h1>Playbook</h1>
-	{% if plays | length > 0 %}
-	<div class="dropdown">
-	  <button onclick="dropdownFunction()" class="dropbtn">Plays</button>
-	  <div id="myDropdown" class="dropdown-content">
-	  	<input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-	  	<!-- jinja2 for loop to pull in all plays and add them to the dropdown menu -->
-	  	{% for play in plays %}
-	  	<hr>
-	    <a href="play/{{ play.id }}">{{ play.play_name }}</a>
-	    {% endfor %}
-	    <hr>
-	  </div>
-	  	{% else %}
-			<p> 
-		    	Start by <a href="{{ url_for('add_play') }}">Adding a Play</a>
-			</p>
 
-	    {% endif %}
-	</div>
-	<!-- script for handling dropdown button and filter function -->
-	<script src="{{url_for('static', filename='js/dropdown.js')}}"></script>
+<div class="index_container">
+  <h1>Playbook</h1>
+  <p>Total Plays: {{play_count}}</p>
+  <p> Total Archived: {{archive_count}}</p>
+  {% if plays | length > 0 %}
+  <div class="dropdown float-left">
+    <input type="text" placeholder="Search.." id="playInput" class="collapsibleInput"> 
+    {% for item in play_buttons %}
+    <button type="button" id="playInputButton" class="collapsible">{{ item }}</button>
+    <div class="content" id="playInputDiv">
+      {% for play in plays %}
+      {% if play.mitre_tactic == item %}
+    <ul id="playContent" class="list-group">
+      <li id="liContent" class="list-group-item">
+        <a href="play/{{ play.id }}">{{ play.play_name }}</a>
+        <p>Date Added: {{ play.date_added }}</p>
+        <p>Owner: {{ play.playbook_owner }}</p>
+        <p>Description: {{ play.playbook_description }}</p>
+      </li>
+    </ul>
+      <hr>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+  <div class="dropdown"  nonce="{{ csp_nonce() }}">
+    <button onclick="statusdropdownFunction()" class="dropbtn">Status Search</button>
+    <div id="statusDropdown" class="dropdown-content">
+      <input type="text" placeholder="Search.." id="statusInput" onkeyup="statusfilterFunction()">
+      <!-- jinja2 for loop to pull in all plays and add them to the dropdown menu -->
+      {% for item in status %}
+      <hr>
+      <a href="status/{{ item }}">{{ item }}</a>
+      {% endfor %}
+      <hr>
+    </div>
+      {% else %}
+      <p>
+          Start by <a href="{{ url_for('pb.add_play') }}">Adding a Play</a>
+      </p>
+      {% endif %}
+  </div>
+  <div class="float-right">
+      <canvas id="chart" width="600px" height="400px" nonce="{{ csp_nonce() }}"></canvas>
+  </div>
+  <script nonce="{{ csp_nonce() }}">
+    var canvas = document.getElementById("chart");
+    var ctx = canvas.getContext('2d');
 
+    var data = {
+        labels: [
+            {% for item in labels %}
+               "{{ item }}",
+              {% endfor %}
+            ],
+        datasets: [{
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                highlightFill: "rgba(100,149,237,0.75)",
+                highlightStroke: "rgba(100,149,237,1)",
+                hoverBackgroundColor: "rgba(100,149,237,0.75)",
+                data: [
+                  {% for item in values %}
+                     "{{ item }}",
+                    {% endfor %}
+                  ],
+                borderColor: 'grey',
+                borderWidth: 1
+            }
+        ]
+        };
+
+        var options = {
+                responsive: false,
+                legend: {
+                  display: false,
+                },
+                tooltips: {
+                      mode: 'index',
+                      intersect: false
+                   },
+                   hover: {
+                      mode: 'index',
+                      intersect: false
+                   },
+                scales: {
+                  xAxes: [{
+                    display: true,
+                      ticks: {
+                                beginAtZero:true
+                            },
+                  }],
+                  yAxes: [{
+                    display: true,
+                              ticks: {
+                                beginAtZero:true
+                            },
+                  }]
+                },
+                  annotation: {
+                    annotations: [{
+                        type: 'line',
+                        mode: 'horizontal',
+                        scaleID: 'y-axis-0',
+                        value: '26',
+                        borderWidth: 1
+                    }],
+                    drawTime: "afterDraw" // (default)
+                }
+              };
+
+    // Chart declaration:
+    var multiLineChart = new Chart(ctx, {
+      type: 'horizontalBar',
+      data: data,
+      options: options
+    });
+    </script>
+
+  <!-- script for handling dropdown button and filter function -->
+  <script nonce="{{ csp_nonce() }}" src="{{url_for('static', filename='js/dropdown.js')|escape}}" ></script>
+  <script nonce="{{ csp_nonce() }}" src="{{url_for('static', filename='js/expandable.js')|escape}}"></script>
+  <script nonce="{{ csp_nonce() }}" src="{{url_for('static', filename='js/search.js')|escape}}"></script>
 {% endblock %}

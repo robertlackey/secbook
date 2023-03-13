@@ -1,0 +1,64 @@
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 18px;
+  padding: 18px 140px;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+  font-size: 17px;
+}
+
+
+#playInput {
+box-sizing: border-box;
+background-position: 14px 12px;
+background-repeat: no-repeat;
+font-size: 16px;
+width: 100%;
+padding: 14px;
+border: 1px solid;
+border-bottom: 1px solid;
+}
+#playInput:focus {outline: 3px solid #ddd;}
+
+#playInputDiv {
+box-sizing: border-box;
+background-position: 14px 12px;
+background-repeat: no-repeat;
+font-size: 16px;
+width: 100%;
+padding: 14px;
+border: 1px solid;
+border-bottom: 1px solid;
+}
+#playInput:focus {outline: 3px solid #ddd;}
+
+#playInputButton {
+box-sizing: border-box;
+background-position: 14px 12px;
+background-repeat: no-repeat;
+font-size: 16px;
+width: 100%;
+padding: 14px;
+border: 1px solid;
+border-bottom: 1px solid;
+}
+#playInput:focus {outline: 3px solid #ddd;}
+
+#playContent {
+  /* Remove default list styling */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}

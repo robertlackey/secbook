@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0" nonce="{{ csp_nonce() }}"></script>
+{% endblock %}
+
+{% block body %}
+<div>
+  <div class="container border-bottom mb-4">
+    <h1 class="play">Play Count</h1>
+  </div>
+
+  <div class="container">
+    <canvas id="chart" width="600px" height="400px" style="margin-right:50px;" nonce="{{ csp_nonce() }}"></canvas>
+  </div>
+
+</div>
+
+<script nonce="{{ csp_nonce() }}">
+  var canvas = document.getElementById("chart");
+  var ctx = canvas.getContext('2d');
+  var data = {
+    labels: [
+      {% for item in labels %}
+  "{{ item }}",
+    {% endfor %}
+            ],
+  datasets: [{
+    fillColor: "rgba(151,187,205,0.2)",
+    strokeColor: "rgba(151,187,205,1)",
+    highlightFill: "rgba(100,149,237,0.75)",
+    highlightStroke: "rgba(100,149,237,1)",
+    hoverBackgroundColor: "rgba(100,149,237,0.75)",
+    data: [
+      {% for item in values %}
+                     "{{ item }}",
+  {% endfor %}
+  ],
+    borderColor: 'grey',
+      borderWidth: 1
+            }
+        ]
+        };
+  var options = {
+    responsive: false,
+    legend: {
+      display: false,
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false
+    },
+    hover: {
+      mode: 'index',
+      intersect: false
+    },
+    scales: {
+      xAxes: [{
+        display: true,
+        ticks: {
+          beginAtZero: true
+        },
+      }],
+      yAxes: [{
+        display: true,
+        ticks: {
+          beginAtZero: true
+        },
+      }]
+    },
+    annotation: {
+      annotations: [{
+        type: 'line',
+        mode: 'horizontal',
+        scaleID: 'y-axis-0',
+        value: '26',
+        borderWidth: 1
+      }],
+      drawTime: "afterDraw" // (default)
+    }
+  };
+  // Chart declaration:
+  var multiLineChart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: data,
+    options: options
+  });
+</script>
+
+{% endblock %}

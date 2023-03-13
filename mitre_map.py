@@ -1,51 +1,60 @@
+import os
+import json
 import requests
 from collections import defaultdict
 
 
 class MitreMap:
+    """
+    A class to retrieve tactics and associated techniques from the MITRE ATT&CK framework.
+
+    Example Usage:
+    >>> mm = MitreMap()
+    >>> tactics = mm.get_tactics()
+    """
+
     def __init__(self):
-        # Define get request to pull data from github
-        r = requests.get("https://raw.githubusercontent.com/mitre/cti/subtechniques/enterprise-attack/enterprise-attack.json")
-        try:
-            self.json_data = r.json()
-        except:
-            print("Failed to retrieve JSON data")
+        self.json_data = self.fetch_mitre_data()
+
+    def fetch_mitre_data(self):
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        attack_file = current_dir + "/enterprise-attack.json"
+        if os.path.isfile(attack_file):
+            with open(attack_file) as f:
+                return json.load(f)
+        else:
+            r = requests.get("https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json")
+            try:
+                r.raise_for_status()
+                return r.json()
+            except requests.exceptions.RequestException as e:
+                raise Exception("Failed to fetch MITRE data: " + str(e))
 
     def get_tactics(self):
-        # Create a dictionary to store tactics and their associated techniques
-        self.tactics = defaultdict(list)
-        sorted_tactics = defaultdict(list)
+        """
+        Retrieves tactics and associated techniques from the JSON data.
 
-        def get_phases():
-            # Retrieve the names of all tactics
-            for mitre_object in self.json_data['objects']:
-                try:
-                    if "TA" in mitre_object['external_references'][0]['external_id']:
-                        name = mitre_object['name']
-                        self.tactics[name] = []
-                except:
-                    pass
-        get_phases()
+        Returns:
+            A defaultdict with tactics as keys and techniques as values.
+        """
+        tactics = defaultdict(list)
+
+        # Retrieve the names of all tactics
+        for obj in self.json_data["objects"]:
+            if obj.get("type") == "x-mitre-tactic":
+                name = obj["name"]
+                tactics[name] = []
 
         # Retrieve the techniques associated with each tactic
-        for mitre_object in self.json_data['objects']:
-            try:
-                phase = mitre_object['kill_chain_phases']
-                for tactic in self.tactics:
-                    for i in phase:
-                        p = i['phase_name'].replace("-", " ")
-                        if tactic.lower() in p:
-                            self.tactics[tactic].append(mitre_object['external_references'][0]['external_id'] + "\n" + mitre_object['name'])
-            except:
-                pass
+        for obj in self.json_data["objects"]:
+            if obj.get("type") == "attack-pattern":
+                for phase in obj["kill_chain_phases"]:
+                    for tactic in tactics:
+                        if tactic.lower() in phase["phase_name"].replace("-", " ").lower():
+                            techniques = f"{obj['external_references'][0]['external_id']}\n{obj['name']}"
+                            tactics[tactic].append(techniques)
 
         # Sort the techniques for each tactic alphabetically
-        for k,v in self.tactics.items():
-            sorted_tactics[k] = sorted(v)
+        sorted_tactics = {tactic: sorted(techniques) for tactic, techniques in tactics.items()}
 
         return sorted_tactics
-
-if __name__ == '__main__':
-    mitre_map = MitreMap()
-    tactics = mitre_map.get_tactics()
-    print(tactics)

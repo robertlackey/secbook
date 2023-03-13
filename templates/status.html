@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<div>
+        <div class="container border-bottom mb-4">
+                <h1>Status List</h1>
+        </div>
+        <table class="table table-bordered">
+                <tr>
+                        <th class="bg-primary" scope="col">Play Name</th>
+                        <th class="bg-primary" scope="col">Status</th>
+                        <th class="bg-primary" scope="col">Action</th>
+                </tr>
+                {% for play in plays %}
+                <tr>
+                        <td scope="row"><a href="../play/{{ play.id }}">{{ play.play_name }}</a></td>
+                        <td scope="row">{{ play.playbook_status }}</td>
+                        <td scope="row">
+                                <form method=post action="">
+                                        {{ form.hidden_tag() }}
+                                        {{ form.playbook_status(**{"onchange":"this.form.submit()"}) }}
+                                </form>
+                        </td>
+                </tr>
+                {%endfor%}
+
+        </table>
+</div>
+<br>
+
+
+
+<br>
+{% endblock %}

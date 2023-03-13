@@ -1,115 +1,157 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/play.css') }}">
+
 {% endblock %}
 
 {% block body %}
 <div>
-	<h1 class="play">Play {{plays.play_name}}</h1>
-	<table class="play_table">
-		<tr>
-			<th class="top-header" scope="col">Title</th>
-			<th class="top-header"  scope="col">Action</th>
-		</tr>
-			<tr>
-				<th class="side-header" scope="row">Playbook Name</th>
-				<td class="table-content">{{ plays.play_name }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">Playbook Description</th>
-				<td class="table-content">{{ plays.playbook_description }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">Date Added</th>
-				<td class="table-content">{{ plays.date_added }}</td>
-			</tr>
-			{% if plays.date_updated%}
-			<tr>
-				<th class="side-header" scope="row">Date Updated</th>
-				<td class="table-content">{{ plays.date_updated }}</td>
-			</tr>
-			{% endif %}
-			<tr>
-				<th class="side-header" scope="row">Playbook Owner</th>
-				<td class="table-content">{{ plays.playbook_owner }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">Playbook Type</th>
-				<td class="table-content">{{ plays.playbook_type }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">Detection Technology</th>
-				<td class="table-content">{{ plays.detection_technology }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">Category</th>
-				<td class="table-content">{{ plays.category }}</td>
-			</tr>
-			{% if plays.subcategory|length > 1 %}
-			<tr>
-				<th class="side-header" scope="row">Subcategory</th>
-				<td class="table-content">{{ plays.subcategory }}</td>
-			</tr>
-			{% endif %}
-			<tr>
-				<th class="side-header" scope="row">Splunk Query</th>
-				<td class="table-content">{{ plays.splunk_query }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">Run Frequency</th>
-				<td class="table-content">{{ plays.run_frequency }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">Analyst Action</th>
-				<td class="table-content">{{ plays.analyst_action }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">Mitre ID</th>
-				<td class="table-content">{{ plays.mitre_id }}</td>
-			</tr>
-			{% if plays.mitre_info_tactic|length > 1 %}
-			<tr>
-				<th class="side-header" scope="row">Mitre Tactic</th>
-				<td class="table-content">{{ plays.mitre_info_tactic }}</td>
-			</tr>
-			{% endif %}
-			{% if "TA" in plays.mitre_id %}
-			<tr>
-				<th class="side-header" scope="row">Mitre Tactic</th>
-				<td class="table-content">{{ plays.mitre_info_name }}</td>
-			</tr>
-			{% else %}
-			<tr>
-				<th class="side-header" scope="row">Mitre Name</th>
-				<td class="table-content">{{ plays.mitre_info_name }}</td>
-			</tr>
-			{% endif %}
-			{% if plays.mitre_os|length > 1 %}
-			<tr>
-				<th class="side-header" scope="row">Mitre OS</th>
-				<td class="table-content">{{ plays.mitre_os }}</td>
-			</tr>
-			{% endif %}
-			<tr>
-				<th class="side-header" scope="row">Mitre Description</th>
-				<td class="table-content">{{ plays.mitre_info_description }}</td>
-			</tr>
-			<tr>
-				<th class="side-header" scope="row">mitre url</th>
-				<td class="table-content">{{ plays.mitre_info_url }}</td>
-			</tr>
+        <div class="container border-bottom mb-4">
+                <h1>Play {{plays.play_name}}</h1>
+        </div>
+        <table class="table table-bordered">
+                <tr>
+                        <th class="bg-primary" scope="col">Title</th>
+                        <th class="bg-primary" scope="col">Action</th>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Playbook Name</th>
+                        <td>{{ plays.play_name }}</td>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Playbook Description</th>
+                        <td>{{ plays.playbook_description }}</td>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Date Added</th>
+                        <td>{{ plays.date_added }}</td>
+                </tr>
+                {% if plays.date_updated%}
+                <tr>
+                        <th class="table-active" scope="row">Date Updated</th>
+                        <td>{{ plays.date_updated }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                        <th class="table-active" scope="row">Playbook Owner</th>
+                        <td>{{ plays.playbook_owner }}</td>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Mitre ID</th>
+                        <td>
+                                {% if plays.mitre_id is not none %}
+                                {% for item in plays.mitre_id %}- {{ item }}
+                                <br>
+                                {% endfor %}
+                                {% endif %}
+                        </td>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Mitre Tactic</th>
+                        <td>{{ plays.mitre_tactic }}</td>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Mitre URL</th>
+                        {% if plays.mitre_info_url is not none %}
+                        <td>{% for item in plays.mitre_info_url %}- {{ item }}<br>{% endfor %}</td>
+                        {% endif %}
+                </tr>
+                {% if plays.mitre_info_subtechnique is not none %}
+                {% if plays.mitre_info_subtechnique|length >= 1 %}
+                <tr>
+                        <th class="table-active" scope="row">Mitre Subtechniques</th>
+                        <td>{% for item in plays.mitre_info_subtechnique %}- {{ item }}<br>{% endfor %}</td>
+                </tr>
+                {% endif %}
+                {% endif %}
+                {% if plays.mitre_info_subtechnique_url is not none %}
+                {% if plays.mitre_info_subtechnique_url|length >= 1 %}
+                <tr>
+                        <th class="table-active" scope="row">Mitre Subtechniques URL</th>
+                        <td>{% for item in plays.mitre_info_subtechnique_url %}- {{ item }}<br>{% endfor %}</td>
+                </tr>
+                {% endif %}
+                {% endif %}
+                {% if plays.mitre_info_platforms is not none %}
+                {% if plays.mitre_info_platforms|length >= 1 %}
+                <tr>
+                        <th class="table-active" scope="row">Mitre Platforms</th>
+                        <td>{% for item in plays.mitre_info_platforms %}- {{ item }}<br>{% endfor %}</td>
+                </tr>
+                {% endif %}
+                {% endif %}
+                <tr>
+                        <th class="table-active" scope="row">Created By</th>
+                        <td>{{ plays.user_id }}</td>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Severity</th>
+                        <td>{{ plays.severity }}</td>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Play Status</th>
+                        <td>{{ plays.playbook_status }}</td>
+                </tr>
+                <tr>
+                        <th class="table-active" scope="row">Link To Play</th>
+                        <td><a href="play/{{ plays.id }}">Copy Link</a></td>
+                </tr>
 
-	</table>
-	</div>
-	<br>
-	<form id="play_update" action="../update/{{plays.id}}">
-    	<input class="update" type="submit" value="Edit Play">
-  	</form>
+        </table>
+</div>
+<br>
+<form class="bg-primary btn float-left" action="../update/{{plays.id}}">
+        {{ archive.csrf_token }}
+        <input class="btn btn-primary" type="submit" value="Edit Play">
+</form>
 
-	<form id="play_delete" action="/deleted/{{plays.id}}" method="POST">
-    	<input class="delete" class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
-  	</form>
-	
-	<br>
+<form class="bg-primary btn float-right" action="/deleted/{{plays.id}}" method="POST">
+        {{ archive.csrf_token }}
+        {{ archive.button(class="btn btn-primary") }}
+</form>
+<div class="container border-bottom mb-4">
+        <h1>Versions</h1>
+</div>
+<table class="table table-bordered">
+        <tr>
+                <th class="bg-primary" scope="col">Version</th>
+                <th class="bg-primary" scope="col">Changeset</th>
+                <th class="bg-primary" scope="col">Action</th>
+        </tr>
+        {% for item in range(versions|length) %}
+        {% set next_item = item+1 %}
+        <tr>
+
+                <td><a href="../play_versions/{{ versions[item].transaction_id }}">{{next_item}}</a></td>
+                <td>
+                        {% for k,v in versions[item].changeset.items() %}
+
+                        {% if v[0] != None %}
+                        {% if v[0] == "" %}
+                        {{k}}: ||
+                        {% else %}
+                        {{k}}:
+                        {{ v[0] }} ||
+                        {% endif %}
+                        {{k}}:
+                        {{ v[1] }}
+                        <br>
+                        {% endif %}
+                        {% endfor %}
+                </td>
+                <td>
+                        {% if item > 0 %}
+                        <form class="bg-primary btn float-left" method='POST'
+                                action="../revert_version/{{versions[item].previous.transaction_id}}">
+                                {{ archive.csrf_token }}
+                                <input class="btn btn-primary" type="submit" value="Revert to {{item}}">
+                        </form>
+                        {% endif %}
+                </td>
+        </tr>
+        {% endfor %}
+</table>
+<br>
+
+<br>
 {% endblock %}

@@ -1,66 +1,112 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/add_play.css') }}">
+<link nonce="{{ csp_nonce() }}" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script nonce="{{ csp_nonce() }}" src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js" ></script>
 {% endblock %}
 
 {% block body %}
-<div class="content">
-	<h1>Playbook</h1>
-	<div class="container">
-	        <form action="add_play.html" method="POST">
+<div class="container">
 
-	        	<label class="add_play_label" for="play_name">Play Name</label>
-			    <input type="text" id="play_name" name="play_name" placeholder="Play Name.." required>
+    <div class="form-group">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Add Play</legend>
+                <div class="form-group">
+                    {{ form.play_name.label(class="form-control-label") }}
+                    {% if form.play_name.errors %}
+                    {{ form.play_name(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.play_name.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.play_name(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.playbook_owner.label(class="form-control-label") }}
+                    {% if form.playbook_owner.errors %}
+                    {{ form.playbook_owner(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.playbook_owner.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.playbook_owner(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="add_play_label" for="mitre_tactic">Mitre Tactic</label>
+                    <select id="mitre_tactic" name="mitre_tactic" class="form-control form-control-md">
+                        {% for item in tactics %}
+                        <option value="{{item}}">{{item}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="add_play_label" for="mitre_id">Mitre Technique</label>
+                    <select class="js-example-basic-multiple form-control form-control-md" name="mitre_id[]"
+                        multiple="multiple">
+                        {% for key, value in combined_mitre_info.items() %}
+                        <option value="{{key}} {{value}}">{{key}} {{value}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    {{ form.playbook_description.label(class="form-control-label") }}
+                    {% if form.playbook_description.errors %}
+                    {{ form.playbook_description(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.playbook_description.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.playbook_description(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.severity.label(class="form-control-label") }}
+                    {% if form.severity.errors %}
+                    {{ form.severity(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.severity.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.severity(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.playbook_status.label(class="form-control-label") }}
+                    {% if form.playbook_status.errors %}
+                    {{ form.playbook_status(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.playbook_status.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.playbook_status(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
 
-			    <label class="add_play_label" for="playbook_owner">Owner</label>
-			    <input type="text" id="playbook_owner" name="playbook_owner" placeholder="Play Owner..">
+        </form>
+        <script nonce="{{ csp_nonce() }}">
+            $(document).ready(function () {
+                $('.js-example-basic-multiple').select2();
+                width: "100%"
+            });
+        </script>
+    </div>
 
-			    <label class="add_play_label" for="detection_technology">Detection Technology</label>
-			    <select id="detection_technology" name="detection_technology">
-			    	{% for item in detection_technology %}
-				    <option value="{{item}}">{{item}}</option>
-				    {% endfor %}
-				</select>
-
-			    <label class="add_play_label" for="playbook_type">Playbook Type</label>
-			    <select id="playbook_type" name="playbook_type">
-			    	{% for item in playbook_type %}
-				    <option value="{{item}}">{{item}}</option>
-				    {% endfor %}
-				</select>
-
-			    <label class="add_play_label" for="category">Category</label>
-			    <select id="category" name="category">
-			    	{% for item in category %}
-				    <option value="{{item}}">{{item}}</option>
-				    {% endfor %}
-				</select>
-
-				<label class="add_play_label" for="subcategory">Subcategory</label>
-			    <select id="subcategory" name="subcategory">
-			    	{% for item in subcategory %}
-				    <option value="{{item}}">{{item}}</option>
-				    {% endfor %}
-				</select>
-
-			    <label class="add_play_label" for="mitre_id">Mitre ID</label>
-			    <input type="text" id="mitre_id" name="mitre_id" placeholder="Mitre ID..">
-
-			    <label class="add_play_label" for="splunk_query">Splunk Query</label>
-			    <input type="text" id="splunk_query" name="splunk_query" placeholder="Splunk Query...">
-
-			    <label class="add_play_label" for="run_frequency">Run Frequency</label>
-			    <input type="text" id="run_frequency" name="run_frequency" placeholder="Run Frequency..">
-
-			    <label class="add_play_label" for="analyst_action">Analyst Action</label>
-			    <textarea id="analyst_action" name="analyst_action" placeholder="Analyst Action.." style="height:100px"></textarea>
-
-			    <label class="add_play_label" for="playbook_description">Description</label>
-			    <textarea id="playbook_description" name="playbook_description" placeholder="Description.." style="height:100px"></textarea>
-
-	            <input type="submit" value="Add">
-	        </form>
-    	</div>
-	</div>
-{% endblock %}
+    {% endblock %}
