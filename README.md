@@ -17,6 +17,7 @@ SECURITY_PASSWORD_SALT=salty
 ```
 
 requires docker and docker-compose to be installed
+
 create the certs and start the containers
 
 ```
