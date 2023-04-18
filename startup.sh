@@ -22,8 +22,6 @@ fi
 # Get the IP address of the system
 IP=$(hostname -I | awk '{print $1}')
 
-#!/bin/bash
-
 # Generate a private key
 openssl genpkey -algorithm RSA -out $DIRECTORY/cert.key
 
